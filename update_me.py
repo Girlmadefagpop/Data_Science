@@ -361,7 +361,7 @@ def main():
 
     git_url = "https://github.com/olsonac/Data_science_for_brain_and_behaviour25-26.git"
     branch_name = "main"
-    repo_dir = "./Data_science_for_brain_and_behaviour25-26"
+    repo_dir = "/jupyter/work/Data_science_for_brain_and_behaviour25-26"
 
 
     for line in GitPuller(
