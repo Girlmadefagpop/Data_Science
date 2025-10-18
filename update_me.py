@@ -353,15 +353,18 @@ def main():
         format='[%(asctime)s] %(levelname)s -- %(message)s',
         level=logging.DEBUG)
 
-    # parser = argparse.ArgumentParser(description='Synchronizes a github repository with a local repository.')
+    parser = argparse.ArgumentParser(description='Synchronizes a github repository with a local repository.')
+    parser.add_argument('--ds_folder',default="/jupyter/work",help='folder that contains the repo folder')
     # parser.add_argument('git_url', help='Url of the repo to sync')
     # parser.add_argument('branch_name', default=None, help='Branch of repo to sync', nargs='?')
     # parser.add_argument('repo_dir', default='.', help='Path to clone repo under', nargs='?')
-    # args = parser.parse_args()
+    args = parser.parse_args()
+    root_dir =args.ds_folder
 
     git_url = "https://github.com/olsonac/Data_science_for_brain_and_behaviour25-26.git"
     branch_name = "main"
-    repo_dir = "/jupyter/work/Data_science_for_brain_and_behaviour25-26"
+    repo_folder_name = "Data_science_for_brain_and_behaviour25-26"
+    repo_dir = root_dir + "/" + repo_folder_name
 
 
     for line in GitPuller(
@@ -370,7 +373,7 @@ def main():
         branch=branch_name if branch_name else None
     ).pull():
         print(line)
-
+    os.rename(repo_dir+"/update_me.py",root_dir+"/update_me.py")
 
 if __name__ == '__main__':
     main()
