@@ -1,0 +1,626 @@
+---
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.16.4
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+<!-- #region cell_id="82d55be860db4774bd4c2e1f439af35b" deepnote_cell_type="markdown" -->
+### Data scientists for today...
+<br>
+
+<center>
+<img src=early_zero_users.png width=500>
+</center>
+
+<center>
+Aryabhutta (476 CE) Brahmagupta (598 CE)
+</center>
+
+###  Zero is strange ###
+
+We don't think about it very often, but 'zero' is a strange value.  
+
+It stands for 'nothing'.  
+
+It is, however, crucial for mathematics.  It makes it possible to have a positional system based on powers (e.g. the first position is 1-10 = N, the second position is 10,20,30 = 10\*N, the third position is 100,200,300 etc.)
+
+We saw this in binary numbers  
+$$ 00001101 $$
+$$ = (1 * 2^0) + (0 * 2^1) + (1 * 2^2) + (1 * 2^3) $$  
+\[ note $ 1 * 2^0 $ is the first digit on the **right** in 00001101 \]
+        $$ =   1        +  0        +  4        +  8 $$  
+        $$ =  13 $$
+        
+Zero also has a role in operations - e.g. 3 - 3 = 0
+
+Zero appears as a _placeholder_ in some Babylonian manuscripts (Iraq).
+
+**Aryabhatta** and **Brahmagupta** used zero more systematically and for operations
+
+Zero is important for boolean operations, as we will see.
+
+<img src=aryabhatta_birth_place.png align=left width=400>
+<img src=brahmagupta_birth_place.png align=right width=400>
+<!-- #endregion -->
+
+<!-- #region cell_id="f8061a9041be4b3196133f49f89764d0" deepnote_cell_type="markdown" -->
+# Lecture - week 3 session 1
+<br>
+
+# Arrays/simulation/the three boys problem
+<br>
+<!-- #endregion -->
+
+<!-- #region cell_id="b0d950ca7e1a488cb0f52581f3e57b8e" deepnote_cell_type="markdown" -->
+### Where are we?
+
+### Important python concepts
+- Arithmetic and precedence
+- Variables
+- Functions
+- &rarr; Arrays
+- Loops
+- ...
+
+### Important data concepts
+- distributions (what are they?)
+- simulation vs formula
+- ways of simulating outcomes
+    - &rarr; using random numbers
+    - using arrays of numbers
+- visualizing outcomes
+- interpreting distributions
+- ...
+<!-- #endregion -->
+
+<!-- #region cell_id="af415d3ef2e6408daf0ed9fa525b7ca9" deepnote_cell_type="markdown" -->
+## A problem where simulation can help
+
+#### What is the chance that a family with 4 children will have 3 boys?
+
+Conceptually how would you do this?
+- simulation (we do this)
+- probability theory
+<!-- #endregion -->
+
+<!-- #region cell_id="390a84a0624a4582b923d74948097a97" deepnote_cell_type="markdown" -->
+### Simulation structure
+
+- Simulate one family with four children lots of times (thousands, millions)
+- Count the number of families with three boys
+- Count the number of total number of families simulated
+- Calculate the percentage/proportion with three boys
+
+### Simulate one family
+
+- Simulate four births
+- Count the number of boys
+- Are there three? (T/F or yes/no)
+ 
+### Simulate one birth
+- boys and girls have equal chance
+- flip a coin
+- heads = boys
+- tails = girls
+
+
+
+<!-- #endregion -->
+
+<!-- #region cell_id="aca24b0f31ee4bc1b9433bd60f638a5f" deepnote_cell_type="markdown" -->
+### We need some tools for this
+
+We want to simulate a family with 4 children and then repeat that a large number of times.
+
+- Remember our repeated calculations for interest rates?
+- We had to **run some code a bunch of times**
+- Each time values were changed
+- We had to **keep track of the result** (how many years?  what was the interest rate?)
+<br>
+
+Wouldn't it be easier for the computer to do the repeating and keeping track?
+<br>
+
+#### YES
+<!-- #endregion -->
+
+<!-- #region cell_id="4baa87e6d5aa469f8beeeb22834b4f7d" deepnote_cell_type="markdown" jp-MarkdownHeadingCollapsed=true -->
+### We need two things:
+- ### A place to store a bunch of results (not just one) [today] ###
+- ### A way to repeat a set of lines of code, running all lines for X times [next time] ###
+<br>
+
+<img src=po_box.png align=right width=400>
+
+### We start with 'Storing things'
+Up to now each variable we use needs its own name (remember the labels on boxes?)
+- What if we want to store 100 (or 10,000 or 1 million) values?
+    - You can't name each value individually
+        - my_value1
+        - my_value2
+        - my_value3
+          
+- NIGHTMARE
+  - Hard to write
+  - Easy to make mistakes
+<!-- #endregion -->
+
+<!-- #region cell_id="b14b5474f249480c9ed58bb03b99280e" deepnote_cell_type="markdown" -->
+### Solution 1: How to store lots of values without going crazy -- Arrays
+
+Arrays are variables that store **sets** or **lists** of items
+
+They give you a way to look at individual values in the list
+
+Say you expect to have 10 results.  You might want to store them like this:
+
+<img src=array.png>
+
+### An array is like a set of **numbered** boxes  
+
+- You can put values in each box  
+
+- You can get the values using the number on the box (using the _index_ of the box)
+<!-- #endregion -->
+
+```{python cell_id="9979b19d48584ba18d24de1c65b7d542", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441036313, source_hash="51f0dd89"}
+# load the 'numpy' package (we will do this quite often)
+import numpy as np
+
+
+first_array = np.array([1,3,5,7,9]) # this creates an array with the numbers 1,3,5,7,9 in it
+# the numbers need to be inside of square brackets ('[]')
+
+first_odd=first_array[0] # get the first value from the array and store in the variable 'first_odd'
+third_odd=first_array[2] # get the **third** value in the array and store in the variable 'third_odd'
+
+print("The first odd number is ",first_odd)
+print("The third odd number is ",third_odd)
+print("The data type of the stored values is ", type(first_array[0]))
+
+```
+
+<!-- #region cell_id="14765b58860a47d79503490a0282a04f" deepnote_cell_type="markdown" -->
+For information only:  The 'np.int64' is the data type for the values -- This means 64-bit integer
+
+- 64-bit means the number of 1/0 used to code the number
+- the number of bits determines the largest number that can be stored in that type
+- it also determines how much memory each stored number takes
+<!-- #endregion -->
+
+```{python cell_id="9b64c2540c534c32816f5fe38a1abda8", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=1, execution_start=1760441223823, source_hash="63313d"}
+# you can also create an array of strings
+str_array = np.array(['apples', 'oranges', 'banans'])
+
+print("The data type of the stored values is " , type(str_array[0]))
+```
+
+<!-- #region cell_id="8cbeb615c0324b688ecacf289daffb48" deepnote_cell_type="markdown" -->
+### Creating an array
+
+<!-- #endregion -->
+
+```{python cell_id="9e258c7866e64fa0a7a6e680288b1431", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441260243, source_hash="21e829fb"}
+# make an array of zeros
+test_zeros = np.zeros(10) # notice the 'np'  'np.zeros()' is a function from the np library
+# it returns an array full of zeros.  The number of zeros to return is set by the argument (10 in this case)
+print(test_zeros)
+```
+
+```{python cell_id="7b8b3490a9af46418c5acfb1d92e76bf", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=2, execution_start=1760441263827, source_hash="2b83f839"}
+# make an array of ones
+test_ones = np.ones(10)
+print(test_ones)
+```
+
+```{python cell_id="5a75d06aa58d4895be0c83a8b5aeaf6b", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=2, execution_start=1760442398914, source_hash="2a91da12"}
+# make an array of any value
+test_full = np.full(shape = 5, fill_value =9)
+# or simply
+test_full = np.full(5, 9)
+print(test_full)
+```
+
+```{python cell_id="a7af609af1ad481fa78829067ec2c278", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441314343, source_hash="a41d3dd7"}
+# Note: np.empty() does not return an empty array. It is filled with random values.
+# Therefore this function is not recommended to use
+test_empty = np.empty(5) # generate 5 random values
+print (test_empty)
+```
+
+<!-- #region cell_id="56fdd17fa8d34eb989c531685f38ac47" deepnote_cell_type="markdown" -->
+#### Your turn: how to create a sequence from 0 to 9 using Numpy or using basic python?
+<!-- #endregion -->
+
+```{python cell_id="fa4eb2a1262a4dfb8239cae9d7fd3a03", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760443273043, source_hash="ac002ce5"}
+# put your code here:
+sequence = ...
+
+print(sequence)
+```
+
+<!-- #region cell_id="b0317b07a19944bf8f994d15323781da" deepnote_cell_type="markdown" -->
+#### Create a real empty array to fill in numbers later
+- **np.nan** indicates "not a number". It is a standard indicator of empty or missing values.
+- Some people use 0 or -999 to indicate missing, which may cause inconsistency, confusion and errors, because 0 and -999 can be taken in to calculations and return numeric results. You may miss them.
+- Calculations involving nan will return nan. Therefore you won't miss them.
+- If you want to create an empty value / array and fill in values later, it's safer to initiate them as np.nan than 0 or other numbers.
+- Therefore, **nan** is your friend and makes life easier.
+<!-- #endregion -->
+
+```{python cell_id="06a20aee07894a44b7feabdf074104e4", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=1, execution_start=1760403640123, source_hash="c8d4880b"}
+# create an empty array filled with nan
+test_nan = np.full(5, np.nan)
+print(test_nan)
+```
+
+```{python cell_id="3684ff68fd60462899afe778f7dae56f", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=1, execution_start=1760405451856, source_hash="24ae3fe7"}
+# examine this unique number np.nan that indicates not a number in Numpy package
+print (type (np.nan)) # what is the data type of nan?
+print ( np.nan == 0 ) # is it equal to any number?
+print ( np.nan + 1)  # what is the result of nan plus 1?
+
+```
+
+<!-- #region cell_id="f2989cba046f439b8c1b1769b097d0e8" deepnote_cell_type="markdown" -->
+nan is actually of float number type. Therefore, it represents a missing number, but doesn't represent a missing string (although some advanced techniques can make it work with strings).
+<!-- #endregion -->
+
+```{python cell_id="215341a0c8bb4c2bbf725ff14ea34ec6", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=1, execution_start=1760404015046, source_hash="c47dca0f"}
+# how to check if a single variable is nan? - use np.isnan()
+nan_variable = np.nan
+print ( np.isnan(nan_variable)) 
+print ( np.isnan(0)) # 0 is not nan, therefore the output is False
+```
+
+```{python cell_id="a4eaa8cd60f44b80aedae28c21108024", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=1, execution_start=1760404072996, source_hash="a03cb788"}
+#how to check if np.nan exist in an array? - use np.isnan()
+example_nan = np.array([1, 2, 3, np.nan])
+print ( np.isnan(example_nan) )
+```
+
+<!-- #region cell_id="f2aa5a815f3342ebb137cb5093ea0223" deepnote_cell_type="markdown" -->
+### Access values in an array
+<!-- #endregion -->
+
+```{python cell_id="e77d83d739c94e91b5b1deb3ee7085f7", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441543693, source_hash="c7b4b321"}
+# put a value in one of the 'boxes' in the array -- in this case the fifth box
+test_array = np.array([3, 2, 5, 6, 7])
+test_array[4] = 99
+print (test_array)
+```
+
+<!-- #region cell_id="e717020b741a4480957d1217c01aab57" deepnote_cell_type="markdown" -->
+### Notice that box [4] is the fifth box!
+
+- Counting starts at zero, so 0,1,2,3,4
+- 4 is the fifth box
+<!-- #endregion -->
+
+<!-- #region cell_id="91f8b5a834964586b9b6680658a6ab44" deepnote_cell_type="markdown" -->
+#### More than one value at a time -- Use an array to address an array
+<!-- #endregion -->
+
+```{python cell_id="f2651fe5be35461d804da7c0e9c3a73c", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=0, execution_start=1760409402757, source_hash="af6fa93"}
+# get values using an array of location numbers
+
+locations_i_want = np.array([1,3,4])
+
+retrieved_values = test_array[locations_i_want]
+
+print (retrieved_values)
+```
+
+<!-- #region cell_id="66d8b79e54134d7db2fbb199966c9f53" deepnote_cell_type="markdown" -->
+#### use a 'slice' - What is that?  [number] : [number]
+A 'slice' has [starting_location] : [ending_location + 1]
+Note the usual end value stuff -- The end value is one value more than the last value you want to access
+<!-- #endregion -->
+
+```{python cell_id="b432a41fb60d413b93b13af6d1eca55d", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441643863, source_hash="eddbfa00"}
+print ( test_array[0:4] ) # get locations 0,1,2, 3 stop before 4
+```
+
+<!-- #region cell_id="610fd09eeaf84621a03b6b21805adca1" deepnote_cell_type="markdown" -->
+#### If there is no number after the colon the end of the array is assumed
+#### (note you don't need to know where the end is -- can be useful)
+#### If there is no number **before** the colon, the start of the array is assumed
+As a reminder, the array is [ 3,  2,  5,  6,  99]
+<!-- #endregion -->
+
+```{python cell_id="1f6db6ff6bea482585d86b114696aeae", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441700123, source_hash="d152494b"}
+print (test_array[:3] ) # the first 3 values
+```
+
+```{python cell_id="11b67077aad74f64b6ed33307acbd6b3", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=3, execution_start=1760441702803, source_hash="2be54e9e"}
+print (test_array[3:] ) # values from location 3 (the 4th value) to the end
+```
+
+<!-- #region cell_id="bc52899264904e33b850da326ff9292b" deepnote_cell_type="markdown" -->
+#### Negative numbers count back from the end
+
+- -1 is the last number in the array
+- -5 is the fifth value from the end
+As a reminder, the array is [ 3,  2,  5,  6,  99]
+<!-- #endregion -->
+
+```{python cell_id="171fbc70adb94cfc869a619977a502c0", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760441877363, source_hash="be9cdf5"}
+# Get the last number
+print(test_array[-1])
+```
+
+```{python cell_id="279659dde6ce4e8f9290d5b7efe33a0f", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=3, execution_start=1760441881227, source_hash="b926de74"}
+# Slicing from backwards, the lower index is inclusive, the higher index is exclusive
+print(test_array[-3: -1])
+```
+
+```{python cell_id="32339b8851284bebb5487e67302eff0b", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=3, execution_start=1760441893490, source_hash="ac792509"}
+# Get the last 3 values
+print(test_array[-3:] )
+```
+
+<!-- #region cell_id="9110dd6e585742c28fe80255cf800a28" deepnote_cell_type="markdown" -->
+### Functions that return a single value for the array
+- np.sum
+- np.min
+- np.max
+- np.mean
+- np.std (standard deviation)
+- len (note, not part of Numpy) the array length
+
+<!-- #endregion -->
+
+<!-- #region cell_id="0791a5c17f63470bb6939372bb077af2" deepnote_cell_type="markdown" -->
+### Start working on the '3 boys' problem - simulate one family with a random number generator
+
+#### np.random.randint(low, high, size )
+#### Obtain single random integer. By defaul size = 1
+<!-- #endregion -->
+
+```{python cell_id="53b713f8ff88405b81d997220347a033", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=3, execution_start=1760442180844, source_hash="ddd99cdb"}
+# Try running it a number of times to see that it simulates a 50/50 coin flip
+# returns a random value between the low value (inclusive) and the high value (exclusive)
+one_flip = np.random.randint(low= 0, high = 2) 
+print(one_flip)
+
+```
+
+<!-- #region cell_id="73ccfee71f7c42b5a9058d5b5b88819d" deepnote_cell_type="markdown" -->
+#### Obtain multiple random integers by using the 'size' parameter
+<!-- #endregion -->
+
+```{python cell_id="dab383e12bb24b689fe79f114fb81550", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=3, execution_start=1760442187584, source_hash="92b6f9f9"}
+multi_flips = np.random.randint(low= 0, high = 2, size = 10)
+print(multi_flips)
+```
+
+<!-- #region cell_id="45c38b45e48c4620b663f143c63e7819" deepnote_cell_type="markdown" -->
+#### Your turn: simulate a family with 4 children, with girls lablled as 0 and boys as 1:
+<!-- #endregion -->
+
+```{python cell_id="7918cc3f07304ea98114a8cde212f905", deepnote_cell_type="code", execution_context_id="7644836e-7376-4374-9387-6b2bff9b57ae", execution_millis=1, execution_start=1760374788338, source_hash="4cf9cf35"}
+# fill in the ... part below
+family1 = ...
+# how many boys are there in this family? Calute the number and store in the variable below:
+n_boys_in_family1 = ...
+```
+
+```{python cell_id="10a3a9ce55f4401aa1c8b505997fef7e", deepnote_cell_type="code"}
+# similarly, simulate two more families and count how many boys are there
+# fill in the ... part below:
+family2 = ...
+n_boys_in_family2 = ...
+
+# put your code below for family3:
+...
+...
+```
+
+```{python cell_id="07358d03a4534aafaf7296048fed87c9", deepnote_cell_type="code"}
+# Store the number of boys in the 3 families in an array called 'n_boys_each_family'
+
+# First, initiate this array with 3 np.nan values by using the np.full() function
+
+n_boys_each_family = ...
+
+# Then fill in 3 values for the 3 families obtained above
+n_boys_each_family[0] = ...  # number of boys in family1
+n_boys_each_family[1] = ...  # number of boys in family2
+n_boys_each_family[2] = ...  # number of boys in family3
+```
+
+<!-- #region cell_id="edcec55685554a1b8d9b11b8ee5d30d6" deepnote_cell_type="markdown" -->
+### Count how many values in an array meet certain criteria
+
+- You can pose the logical question 'Is array_value == 3'?
+    - We will use an example array 'n_boys_each_family'
+    - 'n_boys_each_family' will have 6 values, representing number of boys in the 6 families
+    - n_boys_each_family = np.array([2, 3, 4, 3, 1, 0])
+
+
+```
+n_boys_each_family == 3
+```
+
+- That asks if **each value** in the array 'test' is equal to 3
+- If the array is 6 values long
+- The it returns 6 true/false values
+<!-- #endregion -->
+
+```{python cell_id="e7224171070f490e9e3b381441a3ea81", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760442487213, source_hash="85474154"}
+# try it!
+
+n_boys_each_family = np.array([2,3,4,3,1,0]) 
+
+# which values equal 3?
+print (n_boys_each_family == 3)
+```
+
+<!-- #region cell_id="1d0dd8e6f73e4602b3c37858f85d6eac" deepnote_cell_type="markdown" -->
+### You can assign the True/False result to an array
+
+<!-- #endregion -->
+
+```{python cell_id="0922e824983c494895b829203517dd32", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=4, execution_start=1760442501119, source_hash="4457c22c"}
+families_with_3 = (n_boys_each_family == 3) 
+print(families_with_3)
+```
+
+<!-- #region cell_id="5c403818394742949cebc3b3adc78fa8" deepnote_cell_type="markdown" -->
+### Another useful fact!
+
+True/False values convert to numbers automatically:
+- True = 1
+- False = 0
+<!-- #endregion -->
+
+<!-- #region cell_id="b4a827a863c04bd98123de1d638d528b" deepnote_cell_type="markdown" -->
+### Let's use np.sum() that sums up a set of values (e.g. in an array)
+<!-- #endregion -->
+
+```{python cell_id="4c76c9c04ddc475990535903cc14c94a", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=0, execution_start=1760442527473, source_hash="64aa0442"}
+# how many values in 'families_with_3' are True?
+# notice the 'sum' function
+num_with_3 = np.sum(families_with_3)
+print(num_with_3)
+```
+
+```{python cell_id="be3b55b6bf324205ae5287cab8d69695", deepnote_cell_type="code", execution_context_id="b6c559a0-8e1b-400b-b195-84c9f6475935", execution_millis=3, execution_start=1760442531478, source_hash="2c95abe9"}
+# you can also count the values of 3 in the 'n_boys_each_family' array directly:
+num_with_3 = np.sum(n_boys_each_family==3)
+
+print(n_boys_each_family==3) # print the intermidiate result to check
+print(num_with_3) # print the final result
+```
+
+<!-- #region cell_id="c727cd92607148e79b7c0b019c05101d" deepnote_cell_type="markdown" -->
+#### Your turn: How many families have fewer than 3 boys?
+<!-- #endregion -->
+
+```{python cell_id="295bb3edb57a432186ee53dfd98b4310", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=2, execution_start=1760400776659, source_hash="cf36e96d"}
+n_boys_each_family =  np.array([2,3,4,3,1,0]) 
+
+# fill in the ... part below:
+num_below_3 = ...
+
+print(num_below_3)
+
+```
+
+<!-- #region cell_id="83f59666e4584ba29467bf5f7500c939" deepnote_cell_type="markdown" -->
+#### Final step: How often do you get 3 boys from a 4-child family? -- ways to say the same thing
+- Same as: 'What is the **probability** of getting 3 boys from a 4-child family?'
+- Same as the formula:
+      
+$\frac{number\_of\_families\_with\_3\_boys}{total\_number\_of\_families\_simulated}$
+      
+- Same as: 'What is the **percentage** of families with 3 boys?'
+      
+<!-- #endregion -->
+
+<!-- #region cell_id="42f7cbf11c164fada6be888999f570f6" deepnote_cell_type="markdown" -->
+### Exercise 1
+### Now you have tools to try a version of the '3 boys' problem...
+#### You will still need to run codes over and over manually
+#### Write a function to simulate 5 families, each having 4 children. 
+#### Question: What's the percentage of families having 3 boys?
+- Input: empty
+- Output: The percentage of families having 3 boys
+- Steps: 
+    - Initialise an array called 'n_boys_each_family' with 5 np.na values;
+    - For family 1, simulate the sex for their 4 children;
+    - Count how many boys are there; 
+    - Store the count in position 0 of the array. 
+    - Repeat for family 2-5
+    - Count how many 3s are there in 'n_boys_each_family'
+    - Divide the count by 5
+    - Return the percentage
+
+
+<!-- #endregion -->
+
+```{python cell_id="36f443d0c71a45cbb48fb1df81870a82", deepnote_cell_type="code", execution_context_id="5ec65231-48c1-448e-9d96-b557731a0b7f", execution_millis=0, execution_start=1760407943537, source_hash="c9f2222f"}
+import numpy as np
+
+# complet your code here:
+
+# Write a function to simulate 5 families, each having 4 children
+# Return the percentage of families having 3 boys as 'percent_3_boys'
+
+def simulate_3_boys_in_4():  
+    
+
+
+    
+    return percent_3_boys # return the porportion of families having 3 boys
+```
+
+```{python cell_id="733b0e18f8b741709e9af01d4cbf5c90", deepnote_cell_type="code", execution_context_id="fbf095c4-17ff-442e-91af-573a91b93b35", execution_millis=2, execution_start=1760395046603, source_hash="91f123f2"}
+# test your function here
+# set the same seed so our results are comparable. 
+# Remove the following line to see that your results will change each time you run
+# Note: to get the same results each time you run your notebook,
+#       it's recommended to set the seed at the beginnig of the whole notebook.
+np.random.seed(14102025) 
+print (simulate_3_boys_in_4())
+
+```
+
+<!-- #region cell_id="e55d83a139da45dba9a28c7c1c809bc2" deepnote_cell_type="markdown" -->
+### Exercise 2 - Upgrade the function to make it versatile
+#### Write a function to simulate 5 families, each having 'n_chil' children.
+#### What's the percentage of families having 'n_boys' boys?
+- Input: n_boys, n_chil
+- Output: The percentage of families having **n_boys** boys
+- Steps: 
+    - Initialise an array called 'n_boys_each_family' with 5 np.na values;;
+    - For family 1, simulate the sex for their **n_chil** children;
+    - Count how many boys are there; 
+    - Store the count in position 0 of the array. 
+    - Repeat for family 2-5
+    - Count how many values of **n_boys** are there in the array
+    - Divide the count by 5
+    - Return the percentage
+
+<!-- #endregion -->
+
+```{python cell_id="878728f1054945f292db59658ea638c2", deepnote_cell_type="code"}
+# complet your code here:
+
+# Write a function to simulate 5 families, each having 'n_chil' children. 
+# Return the proportion of families having n_boys boys as 'prop_n_boys'
+
+def simulate_boys(n_boys, n_chil):   
+
+
+
+    
+    return percent_n_boys
+```
+
+```{python cell_id="bb1627e2d92b468fa254959a7bd4d54f", deepnote_cell_type="code"}
+# test your function here
+# set the same seed so our results are comparable. 
+# Remove the following line to see that your results will change each time you run
+np.random.seed(14102025) 
+print (simulate_boys(3, 4))
+
+```
+
+<!-- #region cell_id="cc6fa8324a0c4e05ad91d0cf56b606a6" deepnote_cell_type="markdown" -->
+## Next time
+We will learn to write loops so you won't have to repeate codes manually any more.
+You can run simulations as many times as you like.
+<!-- #endregion -->
+
+<!-- #region cell_id="b0faf13210c6456fbf3adaf3e24c89a1" deepnote_cell_type="text-cell-p" formattedRanges=[] -->
+
+<!-- #endregion -->
