@@ -184,6 +184,10 @@ print("last value squared is: ",my_thousand[-1]*my_thousand[-1])
 print("999 times 999 = ",999*999)
 ```
 
+# Drop in session - Thurs 3-4pm
+# 52 Pritchatts Road - G16 (main lecture theatre)
+
+
 ### Some useful functions to note
 
 - `np.sort` sorts an array
@@ -376,7 +380,6 @@ You may want to see the child record here: <https://kids.kiddle.co/Children_of_H
 
 
 <!-- #region -->
-<!-- #region -->
 ### The Swain Jury
 
 #### A Reminder of the problem:
@@ -385,7 +388,6 @@ You may want to see the child record here: <https://kids.kiddle.co/Children_of_H
 <img src="swain_vs_alabama.png">
 
 <https://en.wikipedia.org/wiki/Swain_v._Alabama>
-<!-- #endregion -->
 
 ### Notice the last sentence
 
@@ -445,3 +447,53 @@ A bit of Python (actually R in that case) made a big difference for 145 families
 - To simulate the fair world, what steps do you need to repeat?
 - Which values will you store?
 - How will you calculate the probability of a jury with 0 black members?
+
+
+# steps in simulation
+
+- 26% community was black. 
+- 10-15% of panel members were black  
+- 12 members. 
+
+- simulate one jury member. 
+  - 26% black 74% white. 
+  - pick a number from 0-99 (1-100)  
+    - 1-26 black person. 
+    - 27-100 white person. 
+<br>
+
+- repeat one jury member simulation 12 times
+<br>
+
+- repeat whole jury X times - X should be large 
+  - simulate one jury
+    - simulate one person
+  - save result
+  - repeat
+<br>
+
+- result is number of black jurors in 1000 (X) juries
+- plot as a distribution
+- ask question - is 0 common or uncommon?
+
+
+
+```{python}
+def simulate_jury(percent_black):
+    percent_white = 100-percent_black
+    np.random.choice(size=12,p=[.26,.74])
+```
+
+```{python}
+import numpy as np
+np.random.choice([1,0],size=12,p=[.26,.74])
+```
+
+```{python}
+jury = np.random.randint(low=0, high=100, size=12)
+print(jury)
+black_members = jury < 26
+print(black_members)
+num_black = np.sum(black_members)
+print(num_black)
+```

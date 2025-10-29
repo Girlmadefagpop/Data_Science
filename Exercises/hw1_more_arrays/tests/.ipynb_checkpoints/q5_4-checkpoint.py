@@ -1,12 +1,12 @@
 test = {
-  'name': '',
+  'name': 'Question 5_4',
   'points': 1,
   'suites': [
     {
       'cases': [
         {
           'code': r"""
-          >>> assert bool(all(powers_of_2 == 2 ** np.arange(30)))
+          >>> assert 15 <= average_error <= 25
           """,
           'hidden': False,
           'locked': False

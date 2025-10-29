@@ -1,12 +1,13 @@
 test = {
-  'name': '',
+  'name': 'Question 4_1',
   'points': 1,
   'suites': [
     {
       'cases': [
         {
           'code': r"""
-          >>> assert bool(all(powers_of_2 == 2 ** np.arange(30)))
+          >>> print(first_product, second_product, third_product, fourth_product)
+          6594 663168 66603168 -39250
           """,
           'hidden': False,
           'locked': False
