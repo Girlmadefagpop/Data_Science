@@ -17,11 +17,13 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+
       - name: Configure git
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      # ① 老师仓库 → 你的 Data_Science/main（只做 fast-forward）
+
+      #只做 fast-forward 
       - name: Fast-forward from course upstream
         run: |
           git remote add upstream https://github.com/olsonac/Data_science_for_brain_and_behaviour25-26.git || true
@@ -29,15 +31,15 @@ jobs:
           set +e
           git merge --ff-only upstream/main
           set -e
-      # ② 你的 textbook → 复制到 Data_Science/textbook/ 目录（快照方式）
+
+      #无条件导入 textbook 快照并提交
       - name: Import textbook snapshot
         run: |
           rm -rf textbook
           git clone --depth=1 https://github.com/Girlmadefagpop/textbook.git textbook
           rm -rf textbook/.git
-          if ! git diff --quiet -- textbook; then
-            git add -A
-            git commit -m "ci: update textbook snapshot"
-          fi
+          git add -A
+          git commit -m "ci: update textbook snapshot" || true
+
       - name: Push back to main
         run: git push origin main
