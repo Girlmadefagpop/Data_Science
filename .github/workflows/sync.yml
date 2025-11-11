@@ -1,0 +1,43 @@
+name: Sync course + import textbook
+
+on:
+  schedule:
+    - cron: "17 3 * * *"   # 每天 03:17 UTC 运行（英国冬令时=本地 03:17）
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (main)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Configure git
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      # ① 老师仓库 → 你的 Data_Science/main（只做 fast-forward）
+      - name: Fast-forward from course upstream
+        run: |
+          git remote add upstream https://github.com/olsonac/Data_science_for_brain_and_behaviour25-26.git || true
+          git fetch upstream main
+          set +e
+          git merge --ff-only upstream/main
+          set -e
+      # ② 你的 textbook → 复制到 Data_Science/textbook/ 目录（快照方式）
+      - name: Import textbook snapshot
+        run: |
+          rm -rf textbook
+          git clone --depth=1 https://github.com/Girlmadefagpop/textbook.git textbook
+          rm -rf textbook/.git
+          if ! git diff --quiet -- textbook; then
+            git add -A
+            git commit -m "ci: update textbook snapshot"
+          fi
+      - name: Push back to main
+        run: git push origin main
