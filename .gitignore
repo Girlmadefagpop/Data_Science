@@ -2,3 +2,7 @@
 auto-*.jupyterlab-workspace
 *.png
 *.jpg
+.ipynb_checkpoints/
+auto-*.jupyterlab-workspace
+*.png
+*.jpg
