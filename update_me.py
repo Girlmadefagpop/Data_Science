@@ -90,18 +90,25 @@ class GitPuller(Configurable):
         This checks to make sure the branch we are told to access
         exists in the repo
         """
-        heads = subprocess.run(
-            ["git", "ls-remote", "--heads", "--", self.git_url],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        tags = subprocess.run(
-            ["git", "ls-remote", "--tags", "--", self.git_url],
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        try:
+            heads = subprocess.run(
+                ["git", "ls-remote", "--heads", "--", self.git_url],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            tags = subprocess.run(
+                ["git", "ls-remote", "--tags", "--", self.git_url],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+        except subprocess.CalledProcessError as exc:
+            raise ValueError(
+                f"Could not reach {self.git_url}. Please verify your internet connection,"
+                " repository permissions, or specify an alternate mirror with --git-url."
+            ) from exc
+
         lines = heads.stdout.splitlines() + tags.stdout.splitlines()
         branches = []
         for line in lines:
@@ -354,25 +361,29 @@ def main():
         level=logging.DEBUG)
 
     parser = argparse.ArgumentParser(description='Synchronizes a github repository with a local repository.')
-    parser.add_argument('--ds_folder',default="/jupyter/work",help='folder that contains the repo folder')
-    # parser.add_argument('git_url', help='Url of the repo to sync')
-    # parser.add_argument('branch_name', default=None, help='Branch of repo to sync', nargs='?')
-    # parser.add_argument('repo_dir', default='.', help='Path to clone repo under', nargs='?')
+    parser.add_argument('--ds_folder', default="/jupyter/work", help='folder that contains the repo folder')
+    parser.add_argument('--git-url', dest='git_url', default="https://github.com/olsonac/Data_science_for_brain_and_behaviour25-26.git", help='Url of the repo to sync')
+    parser.add_argument('--branch-name', dest='branch_name', default="main", help='Branch of repo to sync')
+    parser.add_argument('--repo-folder-name', dest='repo_folder_name', default=None, help='Folder name to use for the cloned repository')
     args = parser.parse_args()
-    root_dir =args.ds_folder
+    root_dir = args.ds_folder
 
-    git_url = "https://github.com/olsonac/Data_science_for_brain_and_behaviour25-26.git"
-    branch_name = "main"
-    repo_folder_name = "Data_science_for_brain_and_behaviour25-26"
+    git_url = args.git_url
+    branch_name = args.branch_name
+    repo_folder_name = args.repo_folder_name or git_url.rstrip('/').split('/')[-1].removesuffix('.git')
     repo_dir = root_dir + "/" + repo_folder_name
 
 
-    for line in GitPuller(
-        git_url,
-        repo_dir,
-        branch=branch_name if branch_name else None
-    ).pull():
-        print(line)
+    try:
+        for line in GitPuller(
+            git_url,
+            repo_dir,
+            branch=branch_name if branch_name else None
+        ).pull():
+            print(line)
+    except ValueError as exc:
+        logging.error(exc)
+        return
     os.rename(repo_dir+"/update_me.py",root_dir+"/update_me.py")
 
 if __name__ == '__main__':
